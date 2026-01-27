@@ -32,10 +32,11 @@ export default function Home() {
     <div style={{ padding: 20 }}>
       <nav style={{
         display: "flex",
-        gap: "20px",
+        gap: "24px",
         marginBottom: "30px",
         borderBottom: "1px solid #ddd",
-        paddingBottom: "10px"
+        fontSize: "14px",
+        color: "#555"
       }}>
         <Link href={`/users/${userId}`}>プロフィール</Link>
         <Link href={`/users/${userId}/followings`}>仲良くなりたい人</Link>
