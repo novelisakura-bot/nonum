@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+
 
 export default function Home() {
   const [showInput, setShowInput] = useState(false);
@@ -9,13 +11,24 @@ export default function Home() {
   const [posts, setPosts] = useState<string[]>([]);
   const userId = "me"; // ← 仮。あとでSupabaseから取得する
 
-
   const handlePost = () => {
     if (text.trim() === "") return;
     setPosts([text, ...posts]);
     setText("");
     setShowInput(false);
   };
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*");
+
+      console.log(data);
+    };
+
+    loadPosts();
+  }, []);
 
   return (
     <div style={{
@@ -110,6 +123,8 @@ export default function Home() {
           </div>
         </div>
       )}
+
+
 
       <div style={{ marginTop: "40px" }}>
         {posts.map((p, i) => (
