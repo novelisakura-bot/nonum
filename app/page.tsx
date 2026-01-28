@@ -93,7 +93,7 @@ export default function Home() {
           padding: "10px 20px",
           background: "#222",
           color: "#fff",
-  　      border: "none",
+          border: "none",
           borderRadius: "6px",
           cursor: "pointer"
         }}
