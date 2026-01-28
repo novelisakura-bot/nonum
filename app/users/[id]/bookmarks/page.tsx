@@ -1,3 +1,4 @@
+"use client";
 export default function BookmarksPage({ params }: { params: { id: string } }) {
   return (
     <main style={{ padding: "20px", fontFamily: "sans-serif" }}>
