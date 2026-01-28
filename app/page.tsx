@@ -4,11 +4,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
+type Post = {
+  id: number;
+  content: string;
+  created_at: string;
+};
+
 
 export default function Home() {
   const [showInput, setShowInput] = useState(false);
   const [text, setText] = useState("");
-  const [posts, setPosts] = useState<string[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const userId = "me"; // ← 仮。あとでSupabaseから取得する
 
   const handlePost = async () => {
@@ -148,9 +154,9 @@ export default function Home() {
 
     {/* 投稿一覧です。 */}
       <div style={{ marginTop: "40px" }}>
-        {posts.map((p, i) => (
+        {posts.map((p) => (
           <div
-            key={i}
+            key={p.id}
             style={{
               background: "#f7f7f7",
               padding: "16px",
@@ -159,8 +165,8 @@ export default function Home() {
               lineHeight: "1.6",
               whiteSpace: "pre-wrap"
             }}
-          >
-            {p}
+          >{p.content}
+            
           </div>
         ))}
       </div>
