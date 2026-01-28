@@ -11,9 +11,23 @@ export default function Home() {
   const [posts, setPosts] = useState<string[]>([]);
   const userId = "me"; // ← 仮。あとでSupabaseから取得する
 
-  const handlePost = () => {
-    if (text.trim() === "") return;
-    setPosts([text, ...posts]);
+  const handlePost = async () => {
+    if (text.trim() === "") return; // 投稿文が空文字なら何もしないでリターン
+
+    // supabase に保存
+    const { data, error } = await supabase.from("posts").insert({ content: text }).select();
+
+    // 投稿が保存されてない場合。
+    if (error) {
+      //終了するよ。
+      console.error(error);
+      return;
+    }
+
+    //投稿一覧を更新する。
+    setPosts([data[0], ...posts]);
+
+    // 投稿ダイアログっぽいsomethingを閉じる
     setText("");
     setShowInput(false);
   };
@@ -36,7 +50,7 @@ export default function Home() {
       margin: "0 auto",
       padding: "40px 20px",
       fontFamily: "sans-serif",
-      backgroundColor: "#fff",
+      background: "#fff",
       color: "#333"
     }}>
 
@@ -53,6 +67,7 @@ export default function Home() {
         marginBottom: "30px",
         borderBottom: "1px solid #ddd",
         fontSize: "14px",
+        background: "#fff",
         color: "#555"
       }}>
         <Link href={`/users/${userId}`}>プロフィール</Link>
@@ -64,22 +79,24 @@ export default function Home() {
     </div>
 
 
-      {!showInput && (
-        <button
-          onClick={() => setShowInput(true)}
-          style={{
-            padding: "10px 20px",
-            background: "#222",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer"
-          }}
-        >
-          投稿する
-        </button>
-      )}
+    {/* 投稿するボタンです。 */}
+    {!showInput && (
+      <button
+        onClick={() => setShowInput(true)}
+        style={{
+          padding: "10px 20px",
+          background: "#222",
+          color: "#fff",
+  　      border: "none",
+          borderRadius: "6px",
+          cursor: "pointer"
+        }}
+      >
+        投稿する
+      </button>
+    )}
 
+    {/* ダイアログのつもりです。 */}
       {showInput && (
         <div style={{ marginTop: "20px" }}>
           <textarea
@@ -129,7 +146,7 @@ export default function Home() {
       )}
 
 
-
+    {/* 投稿一覧です。 */}
       <div style={{ marginTop: "40px" }}>
         {posts.map((p, i) => (
           <div
