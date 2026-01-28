@@ -36,12 +36,16 @@ export default function Home() {
       margin: "0 auto",
       padding: "40px 20px",
       fontFamily: "sans-serif",
+      backgroundColor: "#fff",
       color: "#333"
     }}>
-      <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
-        No Num.
-      </h1>
 
+    {/* タイトルです。 */}
+    <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
+      No Num.
+    </h1>
+    
+    {/* ナビです。 */}
     <div style={{ padding: 20 }}>
       <nav style={{
         display: "flex",
