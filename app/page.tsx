@@ -72,7 +72,7 @@ export default function Home() {
       }}>
         <Link href={`/users/${userId}`}>プロフィール</Link>
         <Link href={`/users/${userId}/followings`}>仲良くなりたい人</Link>
-        <Link href={`/users/${userId}/bookmarks`}>かっこいいしおり</Link>
+        <Link href={`/users/${userId}/bookmarks`}>かっこいい！しおり</Link>
       </nav>
 
       {/* ここに投稿一覧とかが続く */}
