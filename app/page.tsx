@@ -20,12 +20,21 @@ export default function Home() {
   const handlePost = async () => {
     if (text.trim() === "") return; // 投稿文が空文字なら何もしないでリターン
 
-    // supabase に保存
-    const { data, error } = await supabase.from("posts").insert({ content: text }).select();
+    // ログイン中のユーザーを取得
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error("ログインしていません");
+      return;
+    }
 
-    // 投稿が保存されてない場合。
+    // 投稿を保存
+    const { data, error } = await supabase
+      .from("posts").insert({
+      user_id: user.id,
+      content: text,
+    }).select();
+
     if (error) {
-      //終了するよ。
       console.error(error);
       return;
     }
