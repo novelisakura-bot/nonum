@@ -91,8 +91,17 @@ useEffect(() => {
     }}>
 
     {/* タイトルです。 */}
-    <h1 style={{ fontSize: "24px", marginBottom: "20px" }}>
-      No Num.
+    <h1
+      style={{
+        fontFamily: '"Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontSize: "28px",
+        fontWeight: "800",          // 極太にしてロゴ感を出す
+        letterSpacing: "-0.04em",   // 文字間を少し詰めてキュッとする
+        color: "#0f172a",           // 真っ黒ではなく少し青みのある濃い色
+        marginBottom: "24px"
+      }}
+    >
+      No Num<span style={{ color: "#3b82f6" }}>.</span> {/* ドットだけアクセントカラーにするのもアリ */}
     </h1>
     
     {/* ナビです。 */}
