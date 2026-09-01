@@ -117,7 +117,7 @@ useEffect(() => {
       }}>
         <Link href={`/main/`}>TL</Link>
         <Link href={`/users/${userId}`}>プロフィール</Link>
-        <Link href={`/users/${userId}/followings`}>仲良くなりたい人</Link>
+        <Link href={`/users/${userId}/followings`}>フォロー</Link>
         <Link href={`/users/${userId}/bookmarks`}>しおり</Link>
       </nav>
 

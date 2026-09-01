@@ -21,7 +21,7 @@ export async function login(formData: FormData) {
 }
 
 // サインアップ関数（アカウントがない方
-export async function signup(formData: FormData) {
+export async function signup(prevState: any, formData: FormData) {
   const supabase = await createClient();
 
   const data = {
@@ -32,9 +32,12 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect("/error");
+    return { success: false, message: '登録に失敗しました。' }
   }
 
   // 登録後は確認メールが飛ぶ設定の場合が多いので、一旦トップへ
-  redirect("/");
+  return {
+    success: true,
+    message: '入力したメールアドレスにメールを送信しました。確認してリンクから再度ログインしてください。',
+  }
 }

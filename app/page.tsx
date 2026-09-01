@@ -1,6 +1,9 @@
+'use client'
+import { useActionState } from 'react'
 import { login, signup } from "./actions";
 
 export default function LoginPage() {
+  const [state, signupAction, isPending] = useActionState(signup, null) // サインアップボタンを押した結果
   return (
     <div style={styles.container}>
       <form style={styles.form}>
@@ -12,8 +15,15 @@ export default function LoginPage() {
 
         <div style={styles.buttonRow}>
           <button formAction={login} style={styles.buttonPrimary}>Log in</button>
-          <button formAction={signup} style={styles.buttonSecondary}>Sign up</button>
+          <button formAction={signupAction} disabled={isPending} style={styles.buttonSecondary}>
+            {isPending ? '送信中...' : 'Sign up'}
+          </button>        
         </div>
+
+        {/* 登録完了・エラーメッセージの表示 */}
+        {state?.message && (
+          <p style={{styles.statusmessage,color: state.success ? '#2563eb' : '#ef4444'}}>{state.message}</p>
+        )}
       </form>
     </div>
   );
@@ -26,6 +36,11 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     background: "#f7f7f7",
+  },
+  statusmessage: {
+    fontSize: '14px',  
+    lineHeight: '1.5',
+    marginTop: '8px'
   },
   form: {
     width: "320px",
@@ -46,6 +61,7 @@ const styles = {
     padding: "12px 14px",
     borderRadius: "8px",
     border: "1px solid #ddd",
+    color: "#111",
     fontSize: "15px",
     outline: "none",
     transition: "border 0.2s",
