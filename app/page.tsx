@@ -22,7 +22,7 @@ export default function LoginPage() {
 
         {/* 登録完了・エラーメッセージの表示 */}
         {state?.message && (
-          <p style={{styles.statusmessage,color: state.success ? '#2563eb' : '#ef4444'}}>{state.message}</p>
+          <p style={{ fontSize: '14px', lineHeight: '1.5', marginTop: '8px',color: state.success ? '#2563eb' : '#ef4444'}}>{state.message}</p>
         )}
       </form>
     </div>
@@ -36,11 +36,6 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     background: "#f7f7f7",
-  },
-  statusmessage: {
-    fontSize: '14px',  
-    lineHeight: '1.5',
-    marginTop: '8px'
   },
   form: {
     width: "320px",
