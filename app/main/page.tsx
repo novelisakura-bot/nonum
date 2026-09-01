@@ -93,11 +93,11 @@ useEffect(() => {
     {/* タイトルです。 */}
     <h1
       style={{
-        fontFamily: '"Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontFamily: '"Playfair Display", "Yu Mincho", "游明朝", serif',
         fontSize: "28px",
-        fontWeight: "800",          // 極太にしてロゴ感を出す
-        letterSpacing: "-0.04em",   // 文字間を少し詰めてキュッとする
-        color: "#0f172a",           // 真っ黒ではなく少し青みのある濃い色
+        fontWeight: "700",          // 極太にしてロゴ感を出す
+        letterSpacing: "-0.02em",   // 文字間を少し詰めてキュッとする
+        color: "#18181b",           // 真っ黒ではなく少し青みのある濃い色
         marginBottom: "24px"
       }}
     >
