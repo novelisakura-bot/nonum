@@ -199,12 +199,10 @@ useEffect(() => {
             key={p.id}
             style={{
               background: "#ffffff",
-              border: "1px solid #e2e8f0",
+              borderBottom: "1px solid #e2e8f0",
               padding: "20px",
               marginBottom: "0px",
               lineHeight: "1.6",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-              whiteSpace: "pre-wrap"
             }}
           >
 
