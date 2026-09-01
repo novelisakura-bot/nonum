@@ -198,7 +198,7 @@ useEffect(() => {
           <div
             key={p.id}
             style={{
-              background: "#f7f7f7",
+              background: "#ffffff",
               border: "1px solid #e2e8f0",
               padding: "20px",
               borderRadius: "12px",
