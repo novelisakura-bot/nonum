@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "./utils/supabase/server"; // appの1つ上の utils を見に行く場合
+import { revalidatePath } from 'next/cache'
 
 // ログイン関数（アカウントをお持ちの方）
 export async function login(formData: FormData) {

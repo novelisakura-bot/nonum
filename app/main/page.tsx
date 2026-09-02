@@ -4,15 +4,17 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { createClient } from "../utils/supabase/server"; // appの1つ上の utils を見に行く場合
 import { supabase } from "../../lib/supabaseClient";
 
+// 型定義
 type Post = {
   id: string;
   user_id: string;
   content: string;
   created_at: string;
+  is_bookmarked?: boolean; // しおりが挟まれているか
 };
-
 
 export default function Home() {
   const [showInput, setShowInput] = useState(false);
@@ -20,6 +22,52 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const userId = "me"; // ← 仮。あとでSupabaseから取得する
 
+
+  // ブクマ
+// Supabaseクライアント作成
+
+  // 1. 投稿一覧と「自分がしおりを挟んだか」の情報を取得
+  const loadPosts = async () => {
+    // ログインユーザーを取得
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // 投稿一覧を取得
+    const { data: postsData, error: postsError } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (postsError) {
+      console.error(postsError);
+      return;
+    }
+
+    // ログイン中の場合、自分がしおりを挟んだ投稿IDのリストを取得
+    let myBookmarkPostIds: string[] = [];
+    if (user) {
+      const { data: bookmarkData } = await supabase
+        .from("bookmarks")
+        .select("post_id")
+        .eq("user_id", user.id);
+
+      if (bookmarkData) {
+        myBookmarkPostIds = bookmarkData.map((b) => b.post_id);
+      }
+    }
+
+    // 投稿一覧データに is_bookmarked フラグを付与してstateにセット
+    const formattedPosts = (postsData || []).map((post) => ({
+      ...post,
+      is_bookmarked: myBookmarkPostIds.includes(post.id),
+    }));
+
+    setPosts(formattedPosts);
+  };
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+  
   // 投稿ボタン押下で発火する処理。
   const handlePost = async () => {
     if (text.trim() === "") return; // 投稿文が空文字なら何もしないでリターン
@@ -46,14 +94,55 @@ export default function Home() {
       return;
     }
 
-    //投稿一覧を更新する。
-    setPosts([data[0], ...posts]);
+    // 新規投稿を追加（初期状態はしおりOFF）
+    if (data && data[0]) {
+      setPosts([{ ...data[0], is_bookmarked: false }, ...posts]);
+    }
 
     // 投稿ダイアログっぽいsomethingを閉じる
     setText("");
     setShowInput(false);
   };
 
+
+  // 3. しおり（ブックマーク）のON/OFF切り替え関数★追加★
+  const handleBookmark = async (postId: string, currentIsBookmarked?: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      alert("しおりを挟むにはログインが必要です");
+      return;
+    }
+
+    // ① 画面上の見た目を即座に反転させる（ローカル更新で爆速化）
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === postId ? { ...p, is_bookmarked: !currentIsBookmarked } : p
+      )
+    );
+
+    // ② Supabase DBの更新
+    if (currentIsBookmarked) {
+      // 既にしおりがあれば削除
+      const { error } = await supabase
+        .from("bookmarks")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("post_id", postId);
+
+      if (error) console.error("しおり削除失敗:", error);
+    } else {
+      // しおりが無ければ追加
+      const { error } = await supabase
+        .from("bookmarks")
+        .insert({
+          user_id: user.id,
+          post_id: postId,
+        });
+
+      if (error) console.error("しおり追加失敗:", error);
+    }
+  };
+  
 useEffect(() => {
   const getUser = async () => {
     const { data } = await supabase.auth.getSession();
@@ -225,7 +314,7 @@ useEffect(() => {
                 alignItems: "center",
                 marginBottom: "12px",
                 fontSize: "12px",
-                color: "64748b",
+                color: "#64748b",
               }}
             >
           
@@ -248,7 +337,7 @@ useEffect(() => {
 
 
 
-            {/* 投稿1つ1つのスタイルとか。 */}
+            {/* 投稿本文 */}
             {
               <div style={{
                 fontSize: "15px",
@@ -258,8 +347,48 @@ useEffect(() => {
                 wordBreak: "break-word",
               }}>
                 {p.content}
-              </div> // 投稿1つ1つのスタイルとか。
+              </div> // 投稿本文
             }
+
+
+            {/* フッター：しおりボタン */}
+            <div style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "8px",
+            }}>
+              <button
+                onClick={() => handleBookmark(p.id)} // しおり保存用のハンドラー
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: p.is_bookmarked ? "#3b82f6" : "#94a3b8", // 保存済みならアクセントカラー（青）
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  borderRadius: "6px",
+                  transition: "color 0.2s, background 0.2s",
+                }}
+              >
+                {/* SVGアイコン（SVGを使うとより洗練されます） */}
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill={p.is_bookmarked ? "currentColor" : "none"}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                 strokeLinejoin="round"
+                >
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+                <span>{p.is_bookmarked ? "しおり挿入済み" : "しおり"}</span>
+              </button>
+            </div>
           </div> // 投稿カード全体のdiv
       );})}
       </div>

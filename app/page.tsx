@@ -6,6 +6,21 @@ export default function LoginPage() {
   const [state, signupAction, isPending] = useActionState(signup, null) // サインアップボタンを押した結果
   return (
     <div style={styles.container}>
+      {/* タイトルです。 */}
+      <h1
+        style={{
+          fontFamily: '"Playfair Display", "Yu Mincho", "游明朝", serif',
+          textAlign: "center",
+          fontSize: "28px",
+          fontWeight: "700",          // 極太にしてロゴ感を出す
+          letterSpacing: "-0.02em",   // 文字間を少し詰めてキュッとする
+          color: "#18181b",           // 真っ黒ではなく少し青みのある濃い色
+          marginBottom: "24px"
+        }}
+      >
+        No Num<span style={{ color: "#3b82f6" }}>.</span> {/* ドットだけアクセントカラーにするのもアリ */}
+      </h1>
+
       <form style={styles.form}>
         <label htmlFor="email" style={styles.label}>Email</label>
         <input id="email" name="email" type="email" required style={styles.input} />
