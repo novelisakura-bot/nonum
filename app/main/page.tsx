@@ -142,7 +142,7 @@ export default function Home() {
       if (error) console.error("しおり追加失敗:", error);
     }
   };
-  
+
 useEffect(() => {
   const getUser = async () => {
     const { data } = await supabase.auth.getSession();
@@ -386,7 +386,6 @@ useEffect(() => {
                 >
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
-                <span>{p.is_bookmarked ? "しおり挿入済み" : "しおり"}</span>
               </button>
             </div>
           </div> // 投稿カード全体のdiv
